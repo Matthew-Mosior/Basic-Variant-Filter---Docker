@@ -33,11 +33,8 @@ WORKDIR "/home/haskelluser"
 #Git clone the repository to /home/haskelluser.
 RUN git clone https://github.com/Matthew-Mosior/Basic-Variant-Filter.git
 
-#Compile bvf.hs.
-RUN ghc -O2 -o BVF Basic-Variant-Filter/src/bvf.hs
-
 #Set alias in bashrc to use BVF.
-RUN echo "alias BVF='/home/haskelluser/BVF'" > /home/haskelluser/.bashrc
+RUN echo "alias BVF='/home/haskelluser/Basic-Variant-Filter/bin/bvf'" > /home/haskelluser/.bashrc
 
 #Source bashrc.
 RUN /bin/bash -c "source /home/haskelluser/.bashrc"
