@@ -2,8 +2,12 @@
 FROM haskell:8
 
 #Update apt-get and get vim.
-RUN apt-get update -y && apt-get install -y vim \
-libnss-sss && apt-get install -y git-core 
+RUN apt-get update -y && \
+apt-get install -y vim && \
+apt-get install -y libnss-sss && \
+apt-get install -y libc6 && \
+apt-get install -y git-core && \
+apt-get install -y sudo 
 
 #Make a new user (haskelluser).
 RUN useradd -ms /bin/bash haskelluser
@@ -14,18 +18,11 @@ RUN addgroup --gid 1024 haskellgroup
 #Give newgroup access to haskelluser.
 RUN usermod -a -G haskellgroup haskelluser
 
-#Set the haskelluser.
-USER haskelluser
+#Add haskelluser to sudo group.
+RUN chpasswd && adduser haskelluser sudo
 
-#Add stuff to path.
-RUN export PATH="/opt/ghc/8.6.3/bin/:/usr/local/bin:/usr/bin:/opt/cabal/2.4/bin:/bin"
-
-#Grab libraries that bvf.hs requires.
-RUN cabal update
-RUN cabal install boxes
-RUN cabal install process
-RUN cabal install split
-RUN cabal install temporary
+#Set no password condition for sudo.
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 #Change working directory to /home/haskelluser.
 WORKDIR "/home/haskelluser"
@@ -33,8 +30,14 @@ WORKDIR "/home/haskelluser"
 #Git clone the repository to /home/haskelluser.
 RUN git clone https://github.com/Matthew-Mosior/Basic-Variant-Filter.git
 
-#Set alias in bashrc to use BVF.
-RUN echo "alias BVF='/home/haskelluser/Basic-Variant-Filter/bin/bvf'" > /home/haskelluser/.bashrc
+#Change permissions of bin directory.
+RUN chmod -R 777 /home/haskelluser/Basic-Variant-Filter
 
-#Source bashrc.
-RUN /bin/bash -c "source /home/haskelluser/.bashrc"
+#Add symlink of bvf to bin.
+RUN sudo ln -s /home/haskelluser/Basic-Variant-Filter/bin /bin
+
+#Add stuff to path.
+RUN export PATH="/opt/ghc/8.6.3/bin/:/usr/local/bin:/usr/bin:/opt/cabal/2.4/bin:/bin"
+
+#Set the home directory.
+ENV HOME=/home/haskelluser
