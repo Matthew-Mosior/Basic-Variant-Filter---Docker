@@ -7,6 +7,8 @@ apt-get install -y vim && \
 apt-get install -y libnss-sss && \
 apt-get install -y libc6 && \
 apt-get install -y git-core && \
+apt-get install -y less && \
+apt-get install -y bsdmainutils && \
 apt-get install -y sudo 
 
 #Make a new user (haskelluser).
