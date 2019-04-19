@@ -30,10 +30,10 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 WORKDIR "/home/haskelluser"
 
 #Git clone the repository to /home/haskelluser.
-RUN git clone https://github.com/Matthew-Mosior/Basic-Variant-Filter.git
+RUN git clone https://github.com/Matthew-Mosior/Basic-Variant-Filter.git 
 
 #Change permissions of bin directory.
-RUN chmod -R 777 /home/haskelluser/Basic-Variant-Filter
+RUN find Basic-Variant-Filter/bin/ -type f -exec chmod 777 {} +
 
 #Add symlink of bvf to bin.
 RUN sudo ln -s /home/haskelluser/Basic-Variant-Filter/bin /bin
